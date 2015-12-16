@@ -45,25 +45,20 @@ public class QRCodeDAO {
         mDatabase = mDbHelper.getWritableDatabase();
     }
 
-    public long insert(String text, Bitmap qrCodeBitmap) {
-/*
-        int size = qrCodeBitmap.getRowBytes() * qrCodeBitmap.getHeight();
-        ByteBuffer buffer = ByteBuffer.allocate(size);
-        qrCodeBitmap.copyPixelsToBuffer(buffer);
-
-        byte[] bytes = new byte[size];
-        buffer.get(bytes, 0, bytes.length);
-*/
-
+    public long insert(String text, byte[] qrCodeImageByteArray) {
         ContentValues cv = new ContentValues();
         cv.put(COL_TEXT, text);
-        cv.put(COL_QR_CODE_BITMAP, convertBitmapToByteArray(qrCodeBitmap));
+        cv.put(COL_QR_CODE_BITMAP, qrCodeImageByteArray);
         long insertResult = mDatabase.insert(TABLE_NAME, null, cv);
         return insertResult;
     }
 
-    public long insert(QrItem qrRow) {
-        return insert(qrRow.text, qrRow.qrCodeBitmap);
+    public long insert(String text, Bitmap qrCodeImageBitmap) {
+        return insert(text, convertBitmapToByteArray(qrCodeImageBitmap));
+    }
+
+    public long insert(QrItem qrItem) {
+        return insert(qrItem.text, qrItem.qrCodeBitmap);
     }
 
     public ArrayList<QrItem> readAll() {
@@ -84,6 +79,15 @@ public class QRCodeDAO {
     }
 
     private byte[] convertBitmapToByteArray(Bitmap bitmap) {
+/*
+        int size = qrCodeBitmap.getRowBytes() * qrCodeBitmap.getHeight();
+        ByteBuffer buffer = ByteBuffer.allocate(size);
+        qrCodeBitmap.copyPixelsToBuffer(buffer);
+
+        byte[] bytes = new byte[size];
+        buffer.get(bytes, 0, bytes.length);
+*/
+
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         return stream.toByteArray();

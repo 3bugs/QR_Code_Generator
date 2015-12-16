@@ -32,12 +32,11 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/qr_code_image"
+    <ListView
+        android:id="@+id/qr_code_list_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
-        android:layout_weight="1"
-        android:scaleType="fitCenter" />
+        android:layout_weight="1" />
 
 </LinearLayout>

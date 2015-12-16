@@ -1,14 +1,18 @@
 package com.promlert.qrcodegenerator;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.promlert.qrcodegenerator.db.QRCodeDAO;
 
 import net.glxn.qrgen.android.QRCode;
+
+import java.io.ByteArrayOutputStream;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,8 +29,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String urlString = urlEditText.getText().toString();
-                Bitmap qrCodeBitmap = QRCode.from(urlString).withSize(500, 500).bitmap();
-                qrCodeImageView.setImageBitmap(qrCodeBitmap);
+                ByteArrayOutputStream qrCodeBOS = QRCode.from(urlString).withSize(500, 500).stream();
+
+                QRCodeDAO db = new QRCodeDAO(MainActivity.this);
+                if (db.insert(urlString, qrCodeBOS.toByteArray()) > -1) {
+                    Toast.makeText(MainActivity.this, "QR Code saved.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
