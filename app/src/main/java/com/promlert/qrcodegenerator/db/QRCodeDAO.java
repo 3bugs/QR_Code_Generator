@@ -79,6 +79,10 @@ public class QRCodeDAO {
         return qrList;
     }
 
+    public void deleteAll() {
+        mDatabase.delete(TABLE_NAME, null, null);
+    }
+
     private byte[] convertBitmapToByteArray(Bitmap bitmap) {
 /*
         int size = qrCodeBitmap.getRowBytes() * qrCodeBitmap.getHeight();

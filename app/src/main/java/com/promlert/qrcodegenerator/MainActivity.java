@@ -1,14 +1,22 @@
 package com.promlert.qrcodegenerator;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,6 +67,34 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        qrCodeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                showQrCodeImageInDialog(
+                        mQrItemList.get(position).text,
+                        mQrItemList.get(position).qrCodeBitmap
+                );
+            }
+        });
+    }
+
+    private void showQrCodeImageInDialog(String text, Bitmap qrCodeImageBitmap) {
+        ImageView qrCodeImageView = new ImageView(this);
+        qrCodeImageView.setImageBitmap(qrCodeImageBitmap);
+
+        LinearLayout layout = new LinearLayout(this);
+        layout.setGravity(Gravity.CENTER);
+        layout.addView(
+                qrCodeImageView,
+                new LinearLayout.LayoutParams(700, 700)
+        );
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(text)
+                .setView(layout)
+                .create();
+        dialog.show();
     }
 
     private void updateListView() {
@@ -70,6 +106,42 @@ public class MainActivity extends AppCompatActivity {
             mQrItemList.add(item);
         }
         mAdapter.notifyDataSetChanged();
+    }
+
+    private static final int MENU_ITEM_DELETE_ALL = 1;
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuItem deleteItem = menu.add(Menu.NONE, MENU_ITEM_DELETE_ALL, Menu.NONE, "Delete All");
+        deleteItem.setIcon(R.drawable.ic_delete_white_24dp);
+        deleteItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case MENU_ITEM_DELETE_ALL:
+                deleteAllData();
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private void deleteAllData() {
+        new AlertDialog.Builder(this)
+                .setTitle("Delete All QR Code Data")
+                .setMessage("Are you sure?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        QRCodeDAO db = new QRCodeDAO(MainActivity.this);
+                        db.deleteAll();
+                        updateListView();
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 
     private static class QrCodeListAdapter extends ArrayAdapter<QRCodeDAO.QrItem> {
