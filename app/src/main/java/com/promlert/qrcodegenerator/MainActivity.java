@@ -18,15 +18,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         final EditText urlEditText = (EditText) findViewById(R.id.url_edit_text);
+        final ImageView qrCodeImageView = (ImageView) findViewById(R.id.qr_code_image);
 
         Button testButton = (Button) findViewById(R.id.test_button);
         testButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String urlString = urlEditText.getText().toString();
-                Bitmap myBitmap = QRCode.from(urlString).bitmap();
-                ImageView qrCodeImage = (ImageView) findViewById(R.id.qr_code_image);
-                qrCodeImage.setImageBitmap(myBitmap);
+                Bitmap qrCodeBitmap = QRCode.from(urlString).bitmap();
+                qrCodeImageView.setImageBitmap(qrCodeBitmap);
             }
         });
     }
