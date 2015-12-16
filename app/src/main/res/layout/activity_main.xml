@@ -34,9 +34,10 @@
 
     <ImageView
         android:id="@+id/qr_code_image"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1"
         android:scaleType="fitCenter" />
 
 </LinearLayout>

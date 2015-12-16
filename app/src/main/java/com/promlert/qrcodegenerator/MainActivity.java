@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String urlString = urlEditText.getText().toString();
-                Bitmap qrCodeBitmap = QRCode.from(urlString).bitmap();
+                Bitmap qrCodeBitmap = QRCode.from(urlString).withSize(500, 500).bitmap();
                 qrCodeImageView.setImageBitmap(qrCodeBitmap);
             }
         });
