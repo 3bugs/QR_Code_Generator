@@ -15,6 +15,7 @@ import java.util.ArrayList;
  * Created by Promlert on 12/16/2015.
  */
 public class QRCodeDAO {
+
     private static final String TAG = "QRCodeDAO";
 
     private static final String DATABASE_NAME = "qrcode.db";
