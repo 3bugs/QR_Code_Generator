@@ -30,12 +30,12 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private static final int IMAGE_WIDTH_IN_PIXEL = 500;
     private static final int IMAGE_HEIGHT_IN_PIXEL = 500;
 
-    private ArrayList<QRCodeDAO.QrItem> mQrItemList = new ArrayList<>();
+    //private final ArrayList<QRCodeDAO.QrItem> mQrItemList = new ArrayList<>();
     private QrCodeListAdapter mAdapter;
 
     @Override
@@ -46,12 +46,16 @@ public class MainActivity extends AppCompatActivity {
         final EditText urlEditText = (EditText) findViewById(R.id.url_edit_text);
         final ListView qrCodeListView = (ListView) findViewById(R.id.qr_code_list_view);
 
-        mAdapter = new QrCodeListAdapter(this, R.layout.qr_item_layout, mQrItemList);
+        mAdapter = new QrCodeListAdapter(
+                this,
+                R.layout.qr_item_layout,
+                new ArrayList<QRCodeDAO.QrItem>()
+        );
         qrCodeListView.setAdapter(mAdapter);
         updateListView();
 
-        Button testButton = (Button) findViewById(R.id.test_button);
-        testButton.setOnClickListener(new View.OnClickListener() {
+        Button generateQrCodeButton = (Button) findViewById(R.id.generate_qr_code_button);
+        generateQrCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String urlString = urlEditText.getText().toString();
@@ -72,8 +76,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 showQrCodeImageInDialog(
-                        mQrItemList.get(position).text,
-                        mQrItemList.get(position).qrCodeBitmap
+                        mAdapter.getItem(position).text,
+                        mAdapter.getItem(position).qrCodeBitmap
                 );
             }
         });
@@ -90,22 +94,19 @@ public class MainActivity extends AppCompatActivity {
                 new LinearLayout.LayoutParams(700, 700)
         );
 
-        AlertDialog dialog = new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this)
                 .setTitle(text)
                 .setView(layout)
-                .create();
-        dialog.show();
+                .show();
     }
 
     private void updateListView() {
         QRCodeDAO db = new QRCodeDAO(this);
         ArrayList<QRCodeDAO.QrItem> itemList = db.readAll();
 
-        mQrItemList.clear();
-        for (QRCodeDAO.QrItem item : itemList) {
-            mQrItemList.add(item);
-        }
-        mAdapter.notifyDataSetChanged();
+        mAdapter.clear();
+        mAdapter.addAll(itemList);
+        //mAdapter.notifyDataSetChanged();
     }
 
     private static final int MENU_ITEM_DELETE_ALL = 1;
@@ -146,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static class QrCodeListAdapter extends ArrayAdapter<QRCodeDAO.QrItem> {
 
-        private static final String TAG = "MainActivity.QrCodeListAdapter";
+        private static final String TAG = QrCodeListAdapter.class.getSimpleName();
 
         private Context mContext;
         private int mLayoutResId;

@@ -16,7 +16,7 @@ import java.util.ArrayList;
  */
 public class QRCodeDAO {
 
-    private static final String TAG = "QRCodeDAO";
+    private static final String TAG = QRCodeDAO.class.getSimpleName();
 
     private static final String DATABASE_NAME = "qrcode.db";
     private static final int DATABASE_VERSION = 1;

@@ -25,10 +25,10 @@
             android:text="www.3bugs.com" />
 
         <Button
-            android:id="@+id/test_button"
+            android:id="@+id/generate_qr_code_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Create QR Code" />
+            android:text="Generate QR Code" />
 
     </LinearLayout>
 
